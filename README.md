@@ -23,7 +23,7 @@
 python main.py
 ```
 
-### 资源清单
+### 创建的资源清单（ap-east-1）
 
 * mysql
 * alb, target group, listener
