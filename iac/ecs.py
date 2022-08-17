@@ -55,7 +55,7 @@ class ECSRegisterTaskDefinition(task.Task):
                 containerDefinitions=[
                     {
                         'name': 'mypoc',
-                        'image': '835751565277.dkr.ecr.ap-east-1.amazonaws.com/mypoc:77b755686826dc0d17437e5f6e9ce76927cad003',
+                        'image': '835751565277.dkr.ecr.ap-east-1.amazonaws.com/mypoc:v1.0',
                         'cpu': 0,
                         'portMappings': [
                             {
@@ -69,11 +69,7 @@ class ECSRegisterTaskDefinition(task.Task):
                             {
                                 'name': 'SQLALCHEMY_DATABASE_URI',
                                 'value': SQLALCHEMY_DATABASE_URI
-                            },
-                            {
-                                'name': 'FLASK_RUN_PORT',
-                                'value': '80'
-                            },
+                            }
                         ],
                         'startTimeout': 20,
                         'stopTimeout': 20,
@@ -86,15 +82,15 @@ class ECSRegisterTaskDefinition(task.Task):
                                 'awslogs-stream-prefix': 'ecs'
                             },
                         },
-                        'healthCheck': {
-                            'command': [
-                                'curl -f http://localhost/health || exit 1',
-                            ],
-                            'interval': 5,
-                            'timeout': 3,
-                            'retries': 2,
-                            'startPeriod': 15
-                        },
+                        # 'healthCheck': {
+                        #     'command': [
+                        #         'curl -f http://localhost/health || exit 1',
+                        #     ],
+                        #     'interval': 5,
+                        #     'timeout': 3,
+                        #     'retries': 3,
+                        #     'startPeriod': 20
+                        # },
                     },
                 ],
                 volumes=[],
@@ -161,7 +157,10 @@ class ECSServiceCreate(task.Task):
                 schedulingStrategy='REPLICA',
                 enableECSManagedTags=True,
                 propagateTags='NONE',
-                enableExecuteCommand=False
+                enableExecuteCommand=False,
+                deploymentController={
+                    'type': 'CODE_DEPLOY'
+                },
             )
             logger.info('Service [%s] created successfully.', serviceName)
         except ClientError:
